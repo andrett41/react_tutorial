@@ -1,4 +1,24 @@
 .App {
   font-family: sans-serif;
-  text-align: left;
+}
+
+span {
+  display: inline-block;
+  margin: 0.5em;
+  text-align: center;
+  background-color: #ccc;
+  width: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.selected {
+  background-color: deepskyblue;
+  color: aliceblue;
+  cursor: not-allowed;
+}
+
+.used {
+  background-color: forestgreen;
+  color: rgb(127, 184, 235);
 }

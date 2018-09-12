@@ -1,90 +1,61 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import axios from "axios";
 
 import "./styles.css";
 
 // main class
 class App extends React.Component {
+  // objects private to class and subordinates in it
   state = {
-    cards: []
+    counter: 0
   };
 
-  addCard = cardInfo => {
-    console.log(cardInfo);
-    this.setState(prevState => [
-      {
-        cards: prevState.cards.push(cardInfo)
-      }
-    ]);
-    console.log(this.state.cards);
+  // function to raise the counter, receives one param without specific type
+  // in this case, will be the integer value based from the Button class call
+  raiseCounter = raise => {
+    // object mode
+    // this.setState({counter:this.state.counter + raise})
+
+    // function mode that gets current state to update
+    this.setState(current => ({
+      counter: current.counter + raise
+    }));
   };
 
   render() {
+    // The onClick function is the call to the specific Button class
     return (
       <div className="App">
-        <Form onSubmit={this.addCard} />
-        <CardList cards={this.state.cards} />
+        <Button raise={1} onClick={this.raiseCounter} />
+        <Button raise={10} onClick={this.raiseCounter} />
+        <Button raise={100} onClick={this.raiseCounter} />
+        <Button raise={1000} onClick={this.raiseCounter} />
+        <Button raise={10000} onClick={this.raiseCounter} />
+        <Result counter={this.state.counter} />
       </div>
     );
   }
 }
 
-// function Card
-// has 3 properties:
-//  avatar_url
-//  name
-//  company
-const Card = props => {
-  return (
-    <div style={{ margin: "1em" }}>
-      <img width="50" src={props.avatar_url} />
-      <div style={{ display: "inline-block", marginLeft: 10 }}>
-        <div style={{ fontSize: "1.25em", fontWeight: "bold" }}>
-          {props.name}
-        </div>
-        <div>{props.company}</div>
-      </div>
-    </div>
-  );
-};
+// Button class
+class Button extends React.Component {
+  // objects private to the button
+  state = {};
 
-// function CardList
-// creates Card objects based on the data it receives
-const CardList = props => {
-  return <div>{props.cards.map(card => <Card key={card.id} {...card} />)}</div>;
-};
-
-class Form extends React.Component {
-  state = {
-    name: ""
+  // function called directly from the button
+  onClick = () => {
+    // it redirects with the specific property to the App main function
+    this.props.onClick(this.props.raise);
   };
-
-  handleSubmit = event => {
-    event.preventDefault();
-    axios
-      .get("https://api.github.com/users/" + this.state.name)
-      .then(response => {
-        this.props.onSubmit(response.data);
-      });
-    this.setState({ name: "" });
-  };
-
+  //rendering of the button
   render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <input
-          value={this.state.name}
-          onChange={event => this.setState({ name: event.target.value })}
-          type="text"
-          placeholder="User here"
-          required
-        />
-        <button type="submit">Add User Info</button>
-      </form>
-    );
+    return <button onClick={this.onClick}>Raise {this.props.raise}</button>;
   }
 }
+
+const Result = props => {
+  return <p>{props.counter}</p>;
+};
 
 const rootElement = document.getElementById("root");
 ReactDOM.render(<App />, rootElement);
